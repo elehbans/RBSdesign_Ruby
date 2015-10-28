@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  RBS_Mode: MyString
+  dG_Hyb: MyString
+  dG_mRNA: MyString
+  MaxIter: MyString
+  Preseq: MyString
+  CDS: MyString
+  Freq_table: MyString
+
+two:
+  RBS_Mode: MyString
+  dG_Hyb: MyString
+  dG_mRNA: MyString
+  MaxIter: MyString
+  Preseq: MyString
+  CDS: MyString
+  Freq_table: MyString
