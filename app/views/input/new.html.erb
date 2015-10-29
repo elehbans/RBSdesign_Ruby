@@ -3,10 +3,38 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for(@input) do |f| %>
-
-      <%= f.label :RBS_Mode %>
-      <%= f.text_field :RBS_Mode, class: 'form-control' %>
+    <%= form_for @input do |f| %>
+        
+      
+      <%= f.label :RBS_Mode, "Select presequence nucleotides available for mutation" %>
+      <%= f.select :RBS_Mode, [['ALL'],['RBS ONLY']]%>
+      
+      <%= f.label :dG_Hyb, "Select dG Hybridization optimization mode" %>
+      <%= f.select :dG_Hyb, [['Precise'],['Greater Than']]%>
+      
+      <%= f.label :dG_Hyb_val, "Optimal dG Hybridization value in kcal/mol"  %>
+      <%= f.text_field :dG_Hyb_val, class: 'form-control' %>
+      
+      <%= f.label :dG_mRNA, "Select dG mRNA optimization mode" %>
+      <%= f.select :dG_mRNA, [['Precise'],['Greater Than']]%>
+      
+      <%= f.label :dG_mRNA_val, "Optimal dG mRNA value in kcal/mol"  %>
+      <%= f.text_field :dG_mRNA_val, class: 'form-control' %>
+      
+      <%= f.label :MaxIter, "Maximum Iterations Allowed"  %>
+      <%= f.text_field :MaxIter, class: 'form-control' %>
+      
+      <%= f.label :FreqTable, "Select target organism" %>
+      <%= f.select :RBS_Mode, [['Aponinum'],['Chlamydomonas']]%>
+      
+      <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
+      <%= f.text_field :PreSeq, class: 'form-control' %>
+      
+      <%= f.label :CDS, "35 nucleotide CDS, incl. start codon" %>
+      <%= f.text_field :CDS, class: 'form-control' %>
+      
+      <%= f.label :Projname, "Project Name" %>
+      <%= f.text_field :ProjName %>
 
       <%= f.submit "Submit Project", class: "btn btn-primary" %>
     <% end %>
