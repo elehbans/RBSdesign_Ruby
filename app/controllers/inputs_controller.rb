@@ -1,5 +1,5 @@
 class InputsController < ApplicationController
-  require 'Open3'
+  require 'open3'
   
   def index
     render :results
@@ -29,7 +29,7 @@ class InputsController < ApplicationController
     if @FreqTable == "Chlamydomonas"
       @FreqTable = "Chlamy_codons.csv"
     else
-      @FreqTable = "Apon_Codons.csv"
+      @FreqTable = "Apon_codons.csv"
     end
     
     @MaxIter = params[:input][:MaxIter]
@@ -39,11 +39,17 @@ class InputsController < ApplicationController
     @CDS = params[:input][:CDS]
     @ProjName = params[:input][:ProjName]
     
-    @arg_string = @RBS_Mode + " " + @dG_Hyb + ":" + @dG_Hyb_val + " " + @dG_mRNA + ":" + @dG_mRNA_val + " " + @PreSeq + " " + @CDS + " " + @ProjName + " " + @FreqTable
+    randstring = ('a'..'z').to_a.shuffle[0,8].join
+    @Output_Filename = @ProjName + "_" + randstring
+    
+    @arg_string = @RBS_Mode + " " + @dG_Hyb + ":" + @dG_Hyb_val + " " + @dG_mRNA + ":" + @dG_mRNA_val + " " + @MaxIter + " " + @PreSeq + " " + @CDS + " " + @Output_Filename + " " + @FreqTable
     
     @text = "python MG_RBSdesign.py " + @arg_string
-    @py_results = Open3.popen3(@text)
-
+    @py_results = Open3.capture2(@text)
+    
+    @ls_of_results = @py_results[0]
+    @ls_of_results = @ls_of_results.split("\n")
+    
     #@Final_string = @RBS_mode + @dG_Hyb + @dG_Hyb_val + @dG_mRNA + @dG_mRNA_val + @PreSeq + @CDS + @ProjName + @FreqTable
     render :results
   end

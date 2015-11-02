@@ -178,7 +178,7 @@ class RBS_Design:
     
     def dG_Hyb_stat_determine(self, curr_Hyb):
         if self.Hyb_Mode == "P":
-            dG_Hyb_status = (curr_Hyb < (1.5 * self.Target_Hyb)) or (curr_Hyb > (0.5 * self.Target_Hyb))
+            dG_Hyb_status = (curr_Hyb < (1.25 * self.Target_Hyb)) or (curr_Hyb > (0.75 * self.Target_Hyb))
             return dG_Hyb_status
         else:
             dG_Hyb_status = (self.Target_Hyb < curr_Hyb)
@@ -315,6 +315,7 @@ class RBS_Design:
         if RunNow.dG_Hyb_stat_determine(Hyb_to_check) == False and RunNow.dG_mRNA_stat_determine(mRNA_to_check) == False:
             self.curr_mRNA['made_best'] = 4
             RunNow.Make_best_dict()
+            RunNow.WriteOutputData("best")
             #print "Target free energies acheived"
             RunNow.print_output("Best",True)
             sys.exit()
@@ -324,7 +325,7 @@ class RBS_Design:
     
     def Create_output_csv(self,name):
         # Create a results file name
-        self.results_file = name + "_RBS_design_" + "".join([random.choice(string.digits) for x in range(6)]) + ".csv"
+        self.results_file = name + ".csv"
         
         with open(self.results_file, 'a') as csvfile:
             
@@ -348,7 +349,7 @@ class RBS_Design:
                         ])
                         
     
-    def WriteOutputData(self,seq_name,dict_choice):
+    def WriteOutputData(self,dict_choice):
         if dict_choice == "Curr":
             dict_name = self.curr_mRNA
         else:
@@ -406,7 +407,7 @@ RunNow.Update_working_dict(init_RBS_seq, RunNow.CDS_input)
 
 RunNow.Create_output_csv(RunNow.seqname_input)
 
-RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+RunNow.WriteOutputData("Curr")
 
 # See if the original sequence satisfies the target energies first
 RunNow.quick_check(RunNow.dG_mRNA_rRNA_list[RunNow.index_call],RunNow.dG_mRNA_list[RunNow.index_call],RunNow.curr_mRNA['RBS_seq'])
@@ -414,6 +415,9 @@ RunNow.quick_check(RunNow.dG_mRNA_rRNA_list[RunNow.index_call],RunNow.dG_mRNA_li
 # Make the current iteration the best one to start with, necessary because BEST is what gets iterated on
 RunNow.Make_best_dict()
 
+#for k, v in RunNow.best_mRNA.iteritems():
+#    print k + " " + str(v)
+    
 # Setup a counter
 iterator = 0
 
@@ -429,7 +433,7 @@ iterator = 0
 Nucleotide_List = []
 
 if RunNow.Nuc_change_input == "All":
-    for i in range(1,(int(RunNow.MaxIter_input/35) + 1)):
+    for i in range(1,(int(RunNow.MaxIter_input/10) + 1)):
         for f in range(0,34):
             Nucleotide_List.append(f)
             
@@ -447,7 +451,7 @@ else:
         for z in range(0,RunNow.best_mRNA['RBS_length']):
             Nucleotide_List.append(z)
     
-
+#print Nucleotide_List
 # Iterate toward the target dG hybrid / dG mRNA combo and stop either at a certain number of iterations or when within +/- 5% of target
 while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) or (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']))) and (iterator < RunNow.MaxIter_input):
     
@@ -518,7 +522,7 @@ while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) or (RunNow.dG_
                 RunNow.curr_mRNA['made_best'] = 0
     
         # write output row now
-        RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+        RunNow.WriteOutputData("Curr")
     
     else:
         pass
@@ -565,7 +569,7 @@ temp_seq = RunNow.curr_mRNA['pre_RBS'] + Best_RBS + RunNow.curr_mRNA['post_RBS']
 RunNow.RunCalc(RunNow.seqname_input, temp_seq)
 RunNow.Update_working_dict(Best_RBS, RunNow.CDS_input)
 RunNow.curr_mRNA['made_best'] = 3
-RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+RunNow.WriteOutputData("Curr")
 RunNow.Make_best_dict()
 
 #print "\n"
@@ -632,7 +636,7 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA'])) and (iterator
     if RunNow.dG_mRNA_stat_determine(RunNow.curr_mRNA['dG_mRNA']) == False:
        # print "Algo finished!"
         RunNow.curr_mRNA['made_best'] = 5
-        RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+        RunNow.WriteOutputData("Curr")
         RunNow.Make_best_dict()
         RunNow.print_output("Best",True)
         sys.exit()
@@ -662,7 +666,7 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA'])) and (iterator
                 
              #   print "MC FAILS" + "\n"
       
-        RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+        RunNow.WriteOutputData("Curr")
         
 #else:
   #  print "\n" + "Maximum iterations reached. The best solution is presented. \n"
@@ -680,7 +684,7 @@ if Best_CDS_val < RunNow.curr_mRNA['dG_mRNA_dist']:
     RunNow.RunCalc(RunNow.seqname_input, temp3)
     RunNow.Update_working_dict(RunNow.best_mRNA['RBS_seq'], RunNow.curr_mRNA['CDS_seq'])
     RunNow.curr_mRNA['made_best'] = 3
-    RunNow.WriteOutputData(RunNow.seqname_input,"Curr")
+    RunNow.WriteOutputData("Curr")
     RunNow.Make_best_dict()
 
 RunNow.print_output("Best",True)

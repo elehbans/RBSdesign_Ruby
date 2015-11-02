@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'delayed_job', '~>4.1.1'
+
 gem "win32-open3-19", :platforms => :mingw
 
 # Use jquery as the JavaScript library
