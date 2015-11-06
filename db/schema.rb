@@ -11,18 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151028213301) do
+ActiveRecord::Schema.define(version: 20151106225328) do
 
   create_table "inputs", force: :cascade do |t|
     t.string   "RBS_Mode"
     t.string   "dG_Hyb"
     t.string   "dG_mRNA"
-    t.string   "MaxIter"
-    t.string   "Preseq"
-    t.string   "CDS"
     t.string   "Freq_table"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "gene"
+    t.string   "ProjName"
+    t.string   "Final_RBS"
+    t.string   "Final_FullSeq"
+    t.string   "Final_Expr"
+    t.string   "Final_Report_Name"
   end
 
 end

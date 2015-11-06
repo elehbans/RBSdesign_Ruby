@@ -4,7 +4,7 @@
 from __future__ import division
 from RBS_CalculatorEH import RBS_Calculator
 from collections import defaultdict
-import sys, math, random, string, csv
+import sys, math, random, string, csv, os
 
 #------------------------------------------------------------------------------
 
@@ -31,6 +31,7 @@ class RBS_Design:
         self.CDS_input = sys.argv[6]
         self.seqname_input = sys.argv[7]
         self.codon_file = sys.argv[8]
+        self.opt_allowed = sys.argv[9]
         
         Hyb_list = self.dG_Hyb_input.split(":")
         self.Target_Hyb = float(Hyb_list[1])
@@ -71,7 +72,7 @@ class RBS_Design:
             self.curr_mRNA['RBS_length'] = 9
         else:
             Nuc_list = self.Nuc_change_input.split(":")
-            self.curr_mRNA['RBS_length'] = Nuc_list[1]
+            self.curr_mRNA['RBS_length'] = int(Nuc_list[1])
             self.curr_mRNA['spacing'] = 35 - (int(Nuc_list[0]) + int(Nuc_list[1]))
         
         self.curr_mRNA['CDS_loc'] = self.CDS_loc
@@ -181,7 +182,7 @@ class RBS_Design:
             dG_Hyb_status = (curr_Hyb < (1.25 * self.Target_Hyb)) or (curr_Hyb > (0.75 * self.Target_Hyb))
             return dG_Hyb_status
         else:
-            dG_Hyb_status = (self.Target_Hyb < curr_Hyb)
+            dG_Hyb_status = (self.Target_Hyb > curr_Hyb)
             return dG_Hyb_status
             
     
@@ -251,7 +252,11 @@ class RBS_Design:
                         ('Arginine','CGA'),
                         ('Arginine','CGG'),
                         ('Arginine','AGA'),
-                        ('Arginine','AGG')]
+                        ('Arginine','AGG'),
+                        ('Glycine','GGA'),
+                        ('Glycine','GGC'),
+                        ('Glycine','GGG'),
+                        ('Glycine','GGT')]
         
         self.codon_dict = defaultdict(list)
         
@@ -312,12 +317,12 @@ class RBS_Design:
     
     def quick_check(self,Hyb_to_check,mRNA_to_check,RBSseq):
         
-        if RunNow.dG_Hyb_stat_determine(Hyb_to_check) == False and RunNow.dG_mRNA_stat_determine(mRNA_to_check) == False:
+        if self.dG_Hyb_stat_determine(Hyb_to_check) == False and self.dG_mRNA_stat_determine(mRNA_to_check) == False:
             self.curr_mRNA['made_best'] = 4
-            RunNow.Make_best_dict()
-            RunNow.WriteOutputData("best")
+            self.Make_best_dict()
+            self.WriteOutputData("Best")
             #print "Target free energies acheived"
-            RunNow.print_output("Best",True)
+            self.print_output("Best",True)
             sys.exit()
         else:
             pass
@@ -325,7 +330,8 @@ class RBS_Design:
     
     def Create_output_csv(self,name):
         # Create a results file name
-        self.results_file = name + ".csv"
+        
+        self.results_file = "results/" + name + ".csv"
         
         with open(self.results_file, 'a') as csvfile:
             
@@ -530,7 +536,10 @@ while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) or (RunNow.dG_
 # reset counter
 iterator = 0
 
-
+if RunNow.opt_allowed == "No":
+    RunNow.print_output("Best",True)
+    sys.exit()
+    
 # Move to codon-optimization attempts
 #print "Switching to codon optimization method \n"
 
@@ -578,6 +587,7 @@ RunNow.Make_best_dict()
 
 if RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False:
     #print "Algo finished - Min requirements met"
+    RunNow.print_output("Best",True)
     sys.exit()
     
 # while the mRNA secondary structure is too great and the iterator is less than input

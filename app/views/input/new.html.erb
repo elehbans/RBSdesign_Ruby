@@ -3,11 +3,26 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for @input do |f| %>
+    <%= form_for @input, url: {action: "create"} do |f| %>
         
+      <%= f.label :Projname, "Project Name" %>
+      <%= f.text_field :ProjName %><br>
+      
+      <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
+      <%= f.text_field :PreSeq, class: 'form-control' %><br>
+      
+      <%= f.label :GeneName, "Gene Name" %>
+      <%= f.text_field :GeneName, class: 'form-control' %><br>
+      
+      <%= f.label :CDS, "35 nucleotide CDS, incl. start codon" %>
+      <%= f.text_field :CDS, class: 'form-control' %><br>
       
       <%= f.label :RBS_Mode, "Select presequence nucleotides available for mutation" %>
-      <%= f.select :RBS_Mode, [['All'],['RBS Only']]%><br>
+      <%= f.select :RBS_Mode, [['All'],['RBS Only'],['Window']]%><br>
+      
+      <%= f.text_field :Window_start, class: 'form-control', placeholder: "Window start nucleotide", style: "#{'display:none' if @input.Window_start != 'Window'}" %><br>
+      
+      <%= f.text_field :Window_length, class: 'form-control', placeholder: "Window length (in nucleotides)", style: "#{'display:none' if @input.Window_start != 'Window'}" %><br>
       
       <%= f.label :dG_Hyb, "Select dG Hybridization optimization mode" %>
       <%= f.select :dG_Hyb, [['Precise'],['Greater Than']]%><br>
@@ -27,16 +42,29 @@
       <%= f.label :FreqTable, "Select target organism" %>
       <%= f.select :FreqTable, [['Aponinum'],['Chlamydomonas']]%><br>
       
-      <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
-      <%= f.text_field :PreSeq, class: 'form-control' %><br>
-      
-      <%= f.label :CDS, "35 nucleotide CDS, incl. start codon" %>
-      <%= f.text_field :CDS, class: 'form-control' %><br>
-      
-      <%= f.label :Projname, "Project Name" %>
-      <%= f.text_field :ProjName %><br>
+      <%= f.label :CodOptAllow, "Is Codon Optimization allowed?" %>
+      <%= f.select :CodOptAllow, [['Yes'],['No']]%><br>
 
       <%= f.submit "Submit Project", class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>
+
+<script type="text/javascript">
+  $(function () {
+    $("#input_RBS_Mode").change(function () {
+        var mode = $(this).val();
+        if (mode == "Window") {
+          $('#input_Window_start').show();
+          $('#input_Window_length').show();
+          $('#input_Window_start_lab').show();
+          $('#input_Window_length_lab').show();
+        } else {
+          $('#input_Window_start').hide();
+          $('#input_Window_length').hide();
+          $('#input_Window_start_lab').hide();
+          $('#input_Window_length_lab').hide();
+        }
+    });
+  });
+</script>

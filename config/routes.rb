@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
   root 'input#new'
-  resources :inputs
+  post 'results' => 'input#create'
 end

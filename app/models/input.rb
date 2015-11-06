@@ -12,6 +12,9 @@ class Input < ActiveRecord::Base
   def CDS
   end
   
+  def GeneName
+  end
+  
   def MaxIter
   end
   
@@ -20,5 +23,14 @@ class Input < ActiveRecord::Base
   
   def FreqTable
   end
+  
+  def CodOptAllow
+  end
+  
+  def Window_start
+  end
 
+  def Window_length
+  end
+  
 end
