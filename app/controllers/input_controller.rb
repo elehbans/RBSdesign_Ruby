@@ -67,7 +67,7 @@ class InputController < ApplicationController
     @final_dG_mRNA = find_result(4,3)
     @final_report = find_result(7,3)
     
-    @input.ProjName = @Projname
+    @input.ProjName = @ProjName
     @input.gene = params[:input][:GeneName]
     @input.Freq_table = params[:input][:FreqTable]
     @input.Final_RBS = @finalRBS

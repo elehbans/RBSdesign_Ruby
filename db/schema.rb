@@ -11,10 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106225328) do
+ActiveRecord::Schema.define(version: 20151109204644) do
 
   create_table "inputs", force: :cascade do |t|
-    t.string   "RBS_Mode"
     t.string   "dG_Hyb"
     t.string   "dG_mRNA"
     t.string   "Freq_table"
