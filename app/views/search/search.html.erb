@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<div class = "center"><h1>RBS Search Utility</h1></div>
+<div class = "center"><p>Enter your Gene of interest to see if someone has already created an RBS to spec</p></div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-5">
+    <%= form_tag '/search_results' do %>
+      <%= text_field_tag 'query' %>
+      <%= submit_tag 'Search' %> 
+    <% end %>
+  </div>
+</div>
+
