@@ -5,11 +5,8 @@ class SearchController < ApplicationController
   end
 
   def results
-    @query = params[:query].to_s
-    
-    #search dbase for query (exact / downcased?)
-    
-    # save list of ids that match
+    @query = params[:query].to_s.downcase
+    @results = Input.where("Gene = ?", @query)
     render :search_results
   end
   

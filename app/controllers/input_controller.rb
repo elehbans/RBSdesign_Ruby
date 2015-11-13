@@ -1,5 +1,8 @@
 class InputController < ApplicationController
   
+  def new
+    @input = Input.new
+  end
   
   def create
     @input = Input.new
@@ -15,7 +18,7 @@ class InputController < ApplicationController
     
     # Parse and save results to appropriate column
     @input.ProjName = params[:input][:ProjName]
-    @input.gene = params[:input][:GeneName]
+    @input.gene = params[:input][:GeneName].to_s.downcase
     @input.Freq_table = params[:input][:FreqTable]
     @input.Final_RBS = Input.find_result(@results,0,2)
     @input.Final_Expr = Input.find_result(@results,2,2)

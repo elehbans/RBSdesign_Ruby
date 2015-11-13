@@ -1,6 +1,16 @@
 <!DOCTYPE html>
-<div class = "center"><h1>HI</h1></div>
+<div class = "center"><h1>RBS Search Results</h1></div>
 
-<%= "Your query was: " + @query %>
-<%= "Your results are: "  %>
+<p><%= "Your query was: " + @query %></p>
+<p><%= "Your results are: " %></p>
+<p><% @results.each do |p| %>
+       <h1><%= "ID: " + p.id.to_s %></h1> 
+       <p><%= "Organism: " + p.Freq_table.to_s %></p>
+       <p><%= "dG Hybridization: " + p.dG_Hyb.to_s %></p>
+       <p><%= "dG mRNA: " + p.dG_mRNA.to_s %></p>
+       <p><%= "Final RBS: " + p.Final_RBS.to_s %></p>
+       <p><%= "Full Sequence: " + p.Final_FullSeq.to_s %></p>
+       <p><%= "TIR: " + p.Final_Expr.to_s %></p>
+   <% end %>
+</p>
 

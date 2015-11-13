@@ -34,6 +34,9 @@ class Input < ActiveRecord::Base
   def Window_length
   end
   
+  def RBS_Mode
+  end
+  
   def self.assign_hash_from_controller(parameters)
     @params = parameters
   end
