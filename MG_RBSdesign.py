@@ -32,6 +32,14 @@ class RBS_Design:
         self.seqname_input = sys.argv[7]
         self.codon_file = sys.argv[8]
         self.opt_allowed = sys.argv[9]
+        hyb_acc = sys.argv[10]
+        mRNA_acc = sys.argv[11]
+        self.Target_TIR = sys.argv[12]
+        TIR_acc = sys.argv[13]
+        
+        self.Hyb_acc = float("0." + str(hyb_acc))
+        self.mRNA_acc = float("0." + str(mRNA_acc))
+        self.TIR_acc = float("0." + str(TIR_acc))
         
         Hyb_list = self.dG_Hyb_input.split(":")
         self.Target_Hyb = float(Hyb_list[1])
@@ -179,20 +187,24 @@ class RBS_Design:
     
     def dG_Hyb_stat_determine(self, curr_Hyb):
         if self.Hyb_Mode == "P":
-            dG_Hyb_status = (curr_Hyb < (1.25 * self.Target_Hyb)) or (curr_Hyb > (0.75 * self.Target_Hyb))
+            dG_Hyb_status = (curr_Hyb < ((1 + self.Hyb_acc) * self.Target_Hyb)) and (curr_Hyb > ((1 - self.Hyb_acc) * self.Target_Hyb))
             return dG_Hyb_status
         else:
-            dG_Hyb_status = (self.Target_Hyb > curr_Hyb)
+            dG_Hyb_status = (self.Target_Hyb < curr_Hyb)
             return dG_Hyb_status
             
     
     def dG_mRNA_stat_determine(self, curr_dG_mRNA):
         if self.dG_mRNA_Mode == "P":
-            dG_mRNA_status = (curr_dG_mRNA < (1.2 * self.Target_dG_mRNA)) or (curr_dG_mRNA > (0.8 * self.Target_dG_mRNA))
+            dG_mRNA_status = (curr_dG_mRNA < ((1 + self.mRNA_acc) * self.Target_dG_mRNA)) and (curr_dG_mRNA > ((1 - self.mRNA_acc) * self.Target_dG_mRNA))
             return dG_mRNA_status
         else:
-            dG_mRNA_status = (self.Target_dG_mRNA > curr_dG_mRNA)
+            dG_mRNA_status = (self.Target_dG_mRNA < curr_dG_mRNA)
             return dG_mRNA_status
+    
+    def TIR_stat_determine(self, curr_TIR):
+        TIR_status = (curr_TIR < ((1 + self.TIR_acc) * self.Target_TIR)) and (curr_TIR > ((1 - self.TIR_acc) * self.Target_TIR))
+        return TIR_status
    
     
     def setup_codon_dict(self):
@@ -315,9 +327,9 @@ class RBS_Design:
         
     
     
-    def quick_check(self,Hyb_to_check,mRNA_to_check,RBSseq):
+    def quick_check(self,Hyb_to_check,mRNA_to_check,TIR_to_check,RBSseq):
         
-        if self.dG_Hyb_stat_determine(Hyb_to_check) == False and self.dG_mRNA_stat_determine(mRNA_to_check) == False:
+        if self.dG_Hyb_stat_determine(Hyb_to_check) == True and self.dG_mRNA_stat_determine(mRNA_to_check) == True and self.TIR_stat_determine(TIR_to_check) == True:
             self.curr_mRNA['made_best'] = 4
             self.Make_best_dict()
             self.WriteOutputData("Best")
@@ -416,7 +428,7 @@ RunNow.Create_output_csv(RunNow.seqname_input)
 RunNow.WriteOutputData("Curr")
 
 # See if the original sequence satisfies the target energies first
-RunNow.quick_check(RunNow.dG_mRNA_rRNA_list[RunNow.index_call],RunNow.dG_mRNA_list[RunNow.index_call],RunNow.curr_mRNA['RBS_seq'])
+RunNow.quick_check(RunNow.dG_mRNA_rRNA_list[RunNow.index_call],RunNow.dG_mRNA_list[RunNow.index_call],RunNow.expr_list[RunNow.index_call],RunNow.curr_mRNA['RBS_seq'])
 
 # Make the current iteration the best one to start with, necessary because BEST is what gets iterated on
 RunNow.Make_best_dict()
@@ -457,9 +469,8 @@ else:
         for z in range(0,RunNow.best_mRNA['RBS_length']):
             Nucleotide_List.append(z)
     
-#print Nucleotide_List
 # Iterate toward the target dG hybrid / dG mRNA combo and stop either at a certain number of iterations or when within +/- 5% of target
-while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) or (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']))) and (iterator < RunNow.MaxIter_input):
+while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb']) == False ) or (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False )) and (iterator < RunNow.MaxIter_input):
     
     #print "\n"
     #print "RBS iteration number: " + str(iterator)
@@ -496,7 +507,7 @@ while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) or (RunNow.dG_
         RunNow.RunCalc(RunNow.seqname_input, New_Full_Seq)
         
         RunNow.Update_working_dict(m, RunNow.CDS_input)
-        RunNow.quick_check(RunNow.curr_mRNA['dG_Hyb'],RunNow.curr_mRNA['dG_mRNA'],RunNow.curr_mRNA['RBS_seq'])
+        RunNow.quick_check(RunNow.curr_mRNA['dG_Hyb'],RunNow.curr_mRNA['dG_mRNA'],RunNow.curr_mRNA['curr_expr'],RunNow.curr_mRNA['RBS_seq'])
         
         RunNow.Bad_RBS_list_hyb[(RunNow.curr_mRNA['RBS_seq'])] = RunNow.curr_mRNA['dG_Hyb_dist']
         RunNow.Bad_RBS_list_mRNA[(RunNow.curr_mRNA['RBS_seq'])] = RunNow.curr_mRNA['dG_mRNA_dist']
@@ -553,10 +564,10 @@ Acceptable_RBS = {}
 
 # create dictionary of acceptable RBS as key, dg mRNA vector as value
 for k,v in RunNow.Bad_RBS_list_hyb.iteritems():
-    if v <= 1.5:
+    if v <= (1 + RunNow.Hyb_acc):
         Acceptable_RBS[k] = RunNow.Bad_RBS_list_mRNA[k]
 
-if RunNow.curr_mRNA['dG_Hyb_dist'] <= 1.5:
+if RunNow.curr_mRNA['dG_Hyb_dist'] <= (1 + RunNow.Hyb_acc):
     Acceptable_RBS[RunNow.curr_mRNA['RBS_seq']] = RunNow.curr_mRNA['dG_mRNA_dist']
 
 if not Acceptable_RBS:
@@ -585,13 +596,13 @@ RunNow.Make_best_dict()
 #print "RBS ITERATION CHOSEN FOR CODON OPTIMIZATION:"
 #RunNow.print_output("Best",False)
 
-if RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False:
+if RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == True and (RunNow.TIR_stat_determine(RunNow.curr_mRNA['curr_expr']) == True):
     #print "Algo finished - Min requirements met"
     RunNow.print_output("Best",True)
     sys.exit()
     
 # while the mRNA secondary structure is too great and the iterator is less than input
-while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA'])) and (iterator < RunNow.MaxIter_input):
+while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False) and (iterator < RunNow.MaxIter_input) and (RunNow.TIR_stat_determine(RunNow.curr_mRNA['curr_expr']) == False):
     
    # print "\n"
     #print "iteration number " + str(iterator)
@@ -643,7 +654,7 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA'])) and (iterator
     RunNow.Update_working_dict(Best_RBS, New_CDS)
     RunNow.Bad_CDS_list[(RunNow.curr_mRNA['CDS_seq'])] = RunNow.curr_mRNA['dG_mRNA_dist']
     
-    if RunNow.dG_mRNA_stat_determine(RunNow.curr_mRNA['dG_mRNA']) == False:
+    if (RunNow.dG_mRNA_stat_determine(RunNow.curr_mRNA['dG_mRNA']) == True) and (RunNow.TIR_stat_determine(RunNow.curr_mRNA['curr_expr']) == True):
        # print "Algo finished!"
         RunNow.curr_mRNA['made_best'] = 5
         RunNow.WriteOutputData("Curr")

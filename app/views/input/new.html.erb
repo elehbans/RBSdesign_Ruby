@@ -8,6 +8,9 @@
       <%= f.label :ProjName, "Project Name" %>
       <%= f.text_field :ProjName %><br>
       
+      <%= f.label :FreqTable, "Select target organism" %>
+      <%= f.select :FreqTable, [['Aponinum'],['Chlamydomonas']]%><br>
+      
       <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
       <%= f.text_field :PreSeq, class: 'form-control' %><br>
       
@@ -24,11 +27,24 @@
       
       <%= f.text_field :Window_length, class: 'form-control', placeholder: "Window length (in nucleotides)", style: "#{'display:none' if @input.Window_start != 'Window'}" %><br>
       
-      <%= f.label :dG_Hyb, "Select dG Hybridization optimization mode" %>
-      <%= f.select :dG_Hyb, [['Precise'],['Greater Than']]%><br>
+      <%= f.label :MaxIter, "Maximum Iterations Allowed"  %>
+      <%= f.text_field :MaxIter%><br>
+      
+      <%= f.label :CodOptAllow, "Is Codon Optimization allowed?" %>
+      <%= f.select :CodOptAllow, [['Yes'],['No']]%><br>
+      
+      <%= f.label :Design_Mode, "Select design mode" %>
+      <%= f.select :Design_Mode, [['Basic'],['Advanced']]%><br>
+      
+**** Figure out how to show only when advanced mode is selected!!!
+
+      <%= f.label :dG_Hyb, "Select dG Hybridization optimization mode", style: "#{'display:none' if @input.Design_Mode != 'Basic'}" %>
+      <%= f.select :dG_Hyb, [['Precise'],['Greater Than']], style: "#{'display:none' if @input.Design_Mode != 'Basic'}" %><br>
       
       <%= f.label :dG_Hyb_val, "Optimal dG Hybridization value in kcal/mol"  %>
       <%= f.text_field :dG_Hyb_val %><br>
+      
+      <%= f.text_field :Hyb_acc, class: 'form-control', placeholder: "percent deviation allowed" %><br>
       
       <%= f.label :dG_mRNA, "Select dG mRNA optimization mode" %>
       <%= f.select :dG_mRNA, [['Precise'],['Greater Than']]%><br>
@@ -36,14 +52,12 @@
       <%= f.label :dG_mRNA_val, "Optimal dG mRNA value in kcal/mol"  %>
       <%= f.text_field :dG_mRNA_val %><br>
       
-      <%= f.label :MaxIter, "Maximum Iterations Allowed"  %>
-      <%= f.text_field :MaxIter%><br>
+      <%= f.text_field :mRNA_acc, class: 'form-control', placeholder: "percent deviation allowed" %><br>
       
-      <%= f.label :FreqTable, "Select target organism" %>
-      <%= f.select :FreqTable, [['Aponinum'],['Chlamydomonas']]%><br>
+      <%= f.label :Target_TIR, "Target TIR"  %>
+      <%= f.text_field :Target_TIR %><br>
       
-      <%= f.label :CodOptAllow, "Is Codon Optimization allowed?" %>
-      <%= f.select :CodOptAllow, [['Yes'],['No']]%><br>
+      <%= f.text_field :TIR_acc, class: 'form-control', placeholder: "percent deviation allowed" %><br>
 
       <%= f.submit "Submit Project", class: "btn btn-primary" %>
     <% end %>
@@ -62,5 +76,15 @@
           $('#input_Window_length').hide();
         }
     });
+  });
+  $(function () {
+    $("#input_Design_Mode").change(function () {
+          var mode = $(this).val();
+          if (mode == "Advanced") {
+            $('#input_dG_Hyb').show();
+          } else {
+            $('#input_dG_Hyb').hide();
+          }
+      });
   });
 </script>

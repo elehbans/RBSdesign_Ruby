@@ -37,6 +37,22 @@ class Input < ActiveRecord::Base
   def RBS_Mode
   end
   
+  def Hyb_acc
+  end
+  
+  def mRNA_acc
+  end
+  
+  def Target_TIR
+  end
+  
+  def TIR_acc
+  end
+  
+  def Design_Mode
+  end
+  
+  
   def self.assign_hash_from_controller(parameters)
     @params = parameters
   end
@@ -72,6 +88,10 @@ class Input < ActiveRecord::Base
       freq_table = "Apon_codons.csv"
     end
     
+    target_TIR = @params[:input][:Target_TIR]
+    tir_acc = @params[:input][:TIR_acc]
+    hyb_acc = @params[:input][:Hyb_acc]
+    mRNA_acc = @params[:input][:mRNA_acc]
     max_iter = @params[:input][:MaxIter]
     dG_Hyb_val = @params[:input][:dG_Hyb_val]
     dG_mRNA_val = @params[:input][:dG_mRNA_val]
@@ -82,7 +102,7 @@ class Input < ActiveRecord::Base
     
     out_file = proj_name + "_" + Input.randstring
     
-    arg_string = rbs_mode + " " + dG_Hyb + ":" + dG_Hyb_val + " " + dG_mRNA + ":" + dG_mRNA_val + " " + max_iter + " " + pre_seq + " " + cds + " " + out_file + " " + freq_table + " " + opt_allow
+    arg_string = rbs_mode + " " + dG_Hyb + ":" + dG_Hyb_val + " " + dG_mRNA + ":" + dG_mRNA_val + " " + max_iter + " " + pre_seq + " " + cds + " " + out_file + " " + freq_table + " " + opt_allow + " " + hyb_acc + " " + mRNA_acc + " " + target_TIR + " " + tir_acc
   
     return arg_string
   end
