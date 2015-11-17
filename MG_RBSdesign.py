@@ -34,7 +34,7 @@ class RBS_Design:
         self.opt_allowed = sys.argv[9]
         hyb_acc = sys.argv[10]
         mRNA_acc = sys.argv[11]
-        self.Target_TIR = sys.argv[12]
+        self.Target_TIR = float(sys.argv[12])
         TIR_acc = sys.argv[13]
         
         self.Hyb_acc = float("0." + str(hyb_acc))

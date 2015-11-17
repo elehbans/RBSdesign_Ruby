@@ -53,11 +53,14 @@ class Input < ActiveRecord::Base
   end
   
   
+  
+  
   def self.assign_hash_from_controller(parameters)
     @params = parameters
   end
   
   def self.make_argstring()
+    
     rbs_mode = @params[:input][:RBS_Mode]
     if rbs_mode == "RBS Only"
       rbs_mode = "Only"
@@ -67,20 +70,6 @@ class Input < ActiveRecord::Base
       rbs_mode = start + ":" + length
     end
     
-    dG_mRNA = @params[:input][:dG_mRNA]
-    if dG_mRNA == "Precise"
-      dG_mRNA = "P"
-    else
-      dG_mRNA = "G"
-    end
-    
-    dG_Hyb = @params[:input][:dG_Hyb]
-    if dG_Hyb == "Precise"
-      dG_Hyb = "P"
-    else
-      dG_Hyb = "G"
-    end
-    
     freq_table = @params[:input][:FreqTable]
     if freq_table == "Chlamydomonas"
       freq_table = "Chlamy_codons.csv"
@@ -88,21 +77,48 @@ class Input < ActiveRecord::Base
       freq_table = "Apon_codons.csv"
     end
     
-    target_TIR = @params[:input][:Target_TIR]
-    tir_acc = @params[:input][:TIR_acc]
-    hyb_acc = @params[:input][:Hyb_acc]
-    mRNA_acc = @params[:input][:mRNA_acc]
     max_iter = @params[:input][:MaxIter]
-    dG_Hyb_val = @params[:input][:dG_Hyb_val]
-    dG_mRNA_val = @params[:input][:dG_mRNA_val]
     pre_seq = @params[:input][:PreSeq]
     cds = @params[:input][:CDS]
     proj_name = @params[:input][:ProjName]
     opt_allow = @params[:input][:CodOptAllow]
     
+    des_mode = @params[:input][:Design_Mode]
+    
+    if des_mode == "Advanced"
+      @target_TIR = @params[:input][:Target_TIR]
+      @tir_acc = @params[:input][:TIR_acc]
+      @hyb_acc = @params[:input][:Hyb_acc]
+      @mRNA_acc = @params[:input][:mRNA_acc]
+      @dG_Hyb_val = @params[:input][:dG_Hyb_val]
+      @dG_mRNA_val = @params[:input][:dG_mRNA_val]
+      
+      @dG_mRNA = @params[:input][:dG_mRNA]
+      if @dG_mRNA == "Precise"
+        @dG_mRNA = "P"
+      else
+        @dG_mRNA = "G"
+      end
+    
+      @dG_Hyb = @params[:input][:dG_Hyb]
+      if @dG_Hyb == "Precise"
+        @dG_Hyb = "P"
+      else
+        @dG_Hyb = "G"
+      end
+    
+    else
+      @target_TIR = "3000"
+      @tir_acc = "10"
+      @hyb_acc = "20"
+      @mRNA_acc = "20"
+      @dG_Hyb_val = "-1.98"
+      @dG_mRNA_val = "-5.6"
+    end
+    
     out_file = proj_name + "_" + Input.randstring
     
-    arg_string = rbs_mode + " " + dG_Hyb + ":" + dG_Hyb_val + " " + dG_mRNA + ":" + dG_mRNA_val + " " + max_iter + " " + pre_seq + " " + cds + " " + out_file + " " + freq_table + " " + opt_allow + " " + hyb_acc + " " + mRNA_acc + " " + target_TIR + " " + tir_acc
+    arg_string = rbs_mode + " " + @dG_Hyb + ":" + @dG_Hyb_val + " " + @dG_mRNA + ":" + @dG_mRNA_val + " " + max_iter + " " + pre_seq + " " + cds + " " + out_file + " " + freq_table + " " + opt_allow + " " + @hyb_acc + " " + @mRNA_acc + " " + @target_TIR + " " + @tir_acc
   
     return arg_string
   end
