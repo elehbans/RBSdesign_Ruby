@@ -5,49 +5,49 @@
   <div class="col-md-6 col-md-offset-3">
     <%= form_for @input, url: {action: "create"} do |f| %>
         
-      <%= f.label :ProjName, "Project Name" %>
-      <%= f.text_field :ProjName %><br>
+      <p><%= f.label :ProjName, "Project Name" %>
+      <%= f.text_field :ProjName %></p>
       
-      <%= f.label :Organism, "Select target organism" %>
-      <%= f.select :Organism, [['Aponinum'],['Synechococcus 7942'],['E.coli']]%><br>
+      <p><%= f.label :Organism, "Select target organism" %>
+      <%= f.select :Organism, [['Aponinum'],['Synechococcus 7942'],['E.coli']]%></p>
       
-      <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
-      <%= f.text_field :PreSeq, class: 'form-control' %><br>
+      <p><%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
+      <%= f.text_field :PreSeq, class: 'form-control' %></p>
       
-      <%= f.label :GeneName, "Gene Name" %>
-      <%= f.text_field :GeneName, class: 'form-control' %><br>
+      <p><%= f.label :GeneName, "Gene Name" %>
+      <%= f.text_field :GeneName, class: 'form-control' %></p>
       
-      <%= f.label :CDS, "35 nucleotide CDS, incl. start codon" %>
-      <%= f.text_field :CDS, class: 'form-control' %><br>
+      <p><%= f.label :CDS, "35 nucleotide CDS, incl. start codon" %>
+      <%= f.text_field :CDS, class: 'form-control' %></p>
       
-      <%= f.label :RBS_Mode, "Select presequence nucleotides available for mutation" %>
-      <%= f.select :RBS_Mode, [['All'],['RBS Only'],['Window']]%>
+      <p><%= f.label :RBS_Mode, "Select presequence nucleotides available for mutation" %>
+      <%= f.select :RBS_Mode, [['All'],['RBS Only'],['Window']]%></p>
       
-      <%= f.text_field :Window_start, class: 'form-control', placeholder: "Window start nucleotide", style: "#{'display:none' if @input.RBS_Mode != 'Window'}" %><br>
+      <p><%= f.text_field :Window_start, class: 'form-control', placeholder: "Window start nucleotide", style: "#{'display:none' if @input.RBS_Mode != 'Window'}" %></p>
       
-      <%= f.text_field :Window_length, class: 'form-control', placeholder: "Window length (in nucleotides)", style: "#{'display:none' if @input.RBS_Mode != 'Window'}" %><br>
+      <p><%= f.text_field :Window_length, class: 'form-control', placeholder: "Window length (in nucleotides)", style: "#{'display:none' if @input.RBS_Mode != 'Window'}" %></p>
       
-      <%= f.label :MaxIter, "Maximum Iterations Allowed"  %>
-      <%= f.text_field :MaxIter%><br>
+      <p><%= f.label :MaxIter, "Maximum Iterations Allowed"  %>
+      <%= f.text_field :MaxIter%></p>
       
-      <%= f.label :CodOptAllow, "Is Codon Optimization allowed?" %>
-      <%= f.select :CodOptAllow, [['Yes'],['No']]%><br>
+      <p><%= f.label :CodOptAllow, "Is Codon Optimization allowed?" %>
+      <%= f.select :CodOptAllow, [['Yes'],['No']]%></p>
       
-      <%= f.label :Design_Mode, "Select design mode" %>
-      <%= f.select :Design_Mode, [['Basic'],['Advanced']]%><br>
+      <p><%= f.label :Design_Mode, "Select design mode" %>
+      <%= f.select :Design_Mode, [['Basic'],['Advanced']]%>
       
-      <%= f.select :Expr_lvl, [['Very High'],['High'],['Mean'],['Low'],['Very Low']], {:prompt => "Select Target Expression Level"} %><br>
+      <%= f.select :Expr_lvl, [['Very High'],['High'],['Mean'],['Low'],['Very Low']], {:prompt => "Select Target Translation Rate"} %></p>
 
-      <%= f.select :dG_Hyb, [['Precise'],['Greater Than']], {:prompt => "Select dG Hybridization Optimization Mode"}, style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
-      <%= f.text_field :dG_Hyb_val, class: 'form-control', placeholder: "Optimal dG Hybridization value in kcal/mol", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
-      <%= f.text_field :Hyb_acc, class: 'form-control', placeholder: "percent deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <p><%= f.select :dG_Hyb, [['Precise'],['Greater Than']], {:prompt => "Select dG Hyb Optimization Mode"}, style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <%= f.text_field :dG_Hyb_val, placeholder: "Target dG Hyb value", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <%= f.text_field :Hyb_acc, placeholder: "% deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %></p>
       
-      <%= f.select :dG_mRNA, [['Precise'],['Greater Than']], {:prompt => "Select dG mRNA Optimization Mode"}, style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
-      <%= f.text_field :dG_mRNA_val, class: 'form-control', placeholder: "Optimal dG mRNA value in kcal/mol", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
-      <%= f.text_field :mRNA_acc, class: 'form-control', placeholder: "percent deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <p><%= f.select :dG_mRNA, [['Precise'],['Greater Than']], {:prompt => "Select dG mRNA Optimization Mode"}, style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <%= f.text_field :dG_mRNA_val, placeholder: "Target dG mRNA value", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <%= f.text_field :mRNA_acc, placeholder: "% deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %></p>
       
-      <%= f.text_field :Target_TIR, class: 'form-control', placeholder: "Target TIR", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
-      <%= f.text_field :TIR_acc, class: 'form-control', placeholder: "percent deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <p><%= f.text_field :Target_TIR, placeholder: "Target TIR", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
+      <%= f.text_field :TIR_acc, placeholder: "% deviation allowed", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %></p>
   
       <%= f.submit "Submit Project", class: "btn btn-primary" %>
     <% end %>

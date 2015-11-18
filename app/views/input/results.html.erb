@@ -1,12 +1,17 @@
+<!DOCTYPE html>
+<div class = "center"><h1>RBS Design Results</h1></div>
 
-<p></p>
-<p>"I am the arg string"</p>
-<p><%= @arg_string %></p>
-<p>"I am the results"</p>
-<p><%= "Redesigned RBS: " + @input.Final_RBS %></p>
-<p><%= "Redesigned Full Sequence: " + @input.Final_FullSeq %></p>
-<p><%= "Final dG Hybridization: " + @input.dG_Hyb %></p>
-<p><%= "Final dG mRNA: " + @input.dG_mRNA%></p>
-<p><%= "Final Translation Initiation Rate: " + @input.Final_Expr %></p>
-<p><%= "Final Report Name: " + @input.Final_Report_Name %></p>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h2>Original Argument String</h2>
+    <p><%= @arg_string %></p>
+    <h2>Results</h2>
+    <p><b>Redesigned RBS: </b> <%= @input.Final_RBS %></p>
+    <p><b>Redesigned Full Sequence: </b><%= @input.Final_FullSeq %></p>
+    <p><b>Final dG Hybridization: </b><%=  @input.dG_Hyb %></p>
+    <p><b>Final dG mRNA: </b><%= @input.dG_mRNA%></p>
+    <p><b>Final Translation Initiation Rate: </b><%=  @input.Final_Expr %></p>
+    <p><b>Final Report Name: </b><%=  @input.Final_Report_Name %></p>
+  </div>
+</div>
 

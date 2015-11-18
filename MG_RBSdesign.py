@@ -432,19 +432,8 @@ RunNow.quick_check(RunNow.dG_mRNA_rRNA_list[RunNow.index_call],RunNow.dG_mRNA_li
 # Make the current iteration the best one to start with, necessary because BEST is what gets iterated on
 RunNow.Make_best_dict()
 
-#for k, v in RunNow.best_mRNA.iteritems():
-#    print k + " " + str(v)
-    
 # Setup a counter
 iterator = 0
-
-#print "Starting Optimization ..."
-
-#print "dG Hyb val of starting material: " + str((RunNow.best_mRNA['dG_Hyb']))
-#print "dG mRNA val of starting material: " + str((RunNow.best_mRNA['dG_mRNA'])) 
-
-#print str(RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb'])) + " = Hyb Status"
-#print str(RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA'])) + " = mRNA status"
 
 # Create list of potential nucleotides to change that favor RBS and nearby nucleotides
 Nucleotide_List = []
@@ -470,9 +459,6 @@ else:
     
 # Iterate toward the target dG hybrid / dG mRNA combo and stop either at a certain number of iterations or when within +/- 5% of target
 while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb']) == False ) or (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False )) and (iterator < RunNow.MaxIter_input):
-    
-    #print "\n"
-    #print "RBS iteration number: " + str(iterator)
     
     # select random number from nucleotide list to mutate
     nt_to_mutate = random.choice(Nucleotide_List)
@@ -512,11 +498,6 @@ while ((RunNow.dG_Hyb_stat_determine(RunNow.best_mRNA['dG_Hyb']) == False ) or (
         RunNow.Bad_RBS_list_mRNA[(RunNow.curr_mRNA['RBS_seq'])] = RunNow.curr_mRNA['dG_mRNA_dist']
         
         iterator = iterator + 1
-    
-        # If the rebuilt RBS is closer to the expression target and the dG mRNA target, set it as the new 'current best"
-        # If not, put it in the list of bad RBS so it is not used again
-        #print str(RunNow.curr_mRNA['tot_vector']) + " is curr tot vector"
-        #print str(RunNow.best_mRNA['tot_vector']) + " is best tot vector"
         
         if RunNow.curr_mRNA['tot_vector'] <= RunNow.best_mRNA['tot_vector']:
             #print "New iteration kept!"
@@ -549,15 +530,6 @@ iterator = 0
 if RunNow.opt_allowed == "No":
     RunNow.print_output("Best",True)
     sys.exit()
-    
-# Move to codon-optimization attempts
-#print "Switching to codon optimization method \n"
-
-#print "FINAL RBS ITERATION:"
-#RunNow.print_output("Curr",False)
-
-#print "BEST RBS ITERATION:"
-#RunNow.print_output("Best",False)
 
 Acceptable_RBS = {}
 
@@ -591,10 +563,6 @@ RunNow.curr_mRNA['made_best'] = 3
 RunNow.WriteOutputData("Curr")
 RunNow.Make_best_dict()
 
-#print "\n"
-#print "RBS ITERATION CHOSEN FOR CODON OPTIMIZATION:"
-#RunNow.print_output("Best",False)
-
 if RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == True and (RunNow.TIR_stat_determine(RunNow.curr_mRNA['curr_expr']) == True):
     #print "Algo finished - Min requirements met"
     RunNow.print_output("Best",True)
@@ -602,9 +570,6 @@ if RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == True and (RunNo
     
 # while the mRNA secondary structure is too great and the iterator is less than input
 while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False) and (iterator < RunNow.MaxIter_input) and (RunNow.TIR_stat_determine(RunNow.curr_mRNA['curr_expr']) == False):
-    
-   # print "\n"
-    #print "iteration number " + str(iterator)
     
     CDS_codon_list = []
     
@@ -628,8 +593,6 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False) and 
         for v in value:
             if v == codon_to_mutate:
                 amino_acid = key
-    
-  #  print amino_acid
     
     # make the set of options equal to the variations of codons for the chosen amino acid
     codon_lottery = RunNow.dict_cod_list[amino_acid]
@@ -663,8 +626,6 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False) and 
     
     else:
         
-       # print "dG mRNA current: " + str(RunNow.curr_mRNA['dG_mRNA'])
-        
         iterator = iterator + 1
         
         if RunNow.curr_mRNA['dG_mRNA_dist'] <= RunNow.best_mRNA['dG_mRNA_dist']:
@@ -688,9 +649,6 @@ while (RunNow.dG_mRNA_stat_determine(RunNow.best_mRNA['dG_mRNA']) == False) and 
       
         RunNow.WriteOutputData("Curr")
         
-#else:
-  #  print "\n" + "Maximum iterations reached. The best solution is presented. \n"
-
 # Select dG mRNA from all attempted CDS with smallest vector to target value
 Best_CDS_val = min(RunNow.Bad_CDS_list.itervalues())
 
