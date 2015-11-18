@@ -8,8 +8,8 @@
       <%= f.label :ProjName, "Project Name" %>
       <%= f.text_field :ProjName %><br>
       
-      <%= f.label :FreqTable, "Select target organism" %>
-      <%= f.select :FreqTable, [['Aponinum'],['Synechococcus 7942'],['E.coli']]%><br>
+      <%= f.label :Organism, "Select target organism" %>
+      <%= f.select :Organism, [['Aponinum'],['Synechococcus 7942'],['E.coli']]%><br>
       
       <%= f.label :PreSeq, "35 nucleotide Pre-Sequence (5' UTR)" %>
       <%= f.text_field :PreSeq, class: 'form-control' %><br>
@@ -35,6 +35,8 @@
       
       <%= f.label :Design_Mode, "Select design mode" %>
       <%= f.select :Design_Mode, [['Basic'],['Advanced']]%><br>
+      
+      <%= f.select :Expr_lvl, [['Very High'],['High'],['Mean'],['Low'],['Very Low']], {:prompt => "Select Target Expression Level"} %><br>
 
       <%= f.select :dG_Hyb, [['Precise'],['Greater Than']], {:prompt => "Select dG Hybridization Optimization Mode"}, style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
       <%= f.text_field :dG_Hyb_val, class: 'form-control', placeholder: "Optimal dG Hybridization value in kcal/mol", style: "#{'display:none' if @input.Design_Mode != 'Advanced'}" %>
@@ -77,6 +79,7 @@
           $('#input_mRNA_acc').show();
           $('#input_Target_TIR').show();
           $('#input_TIR_acc').show();
+          $('#input_Expr_lvl').hide();
         } else {
           $('#input_dG_Hyb').hide();
           $('#input_dG_Hyb_val').hide();
@@ -86,6 +89,7 @@
           $('#input_mRNA_acc').hide();
           $('#input_Target_TIR').hide();
           $('#input_TIR_acc').hide();
+          $('#input_Expr_lvl').show();
         }
       });
   });

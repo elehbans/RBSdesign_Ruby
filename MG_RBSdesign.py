@@ -282,7 +282,6 @@ class RBS_Design:
         
         reader = csv.reader(open(codon_filename, 'r'))
         
-        # Write the spacing, energy pairings to a dictionary
         for row in reader:
             k, v = row
             self.Cod_freq_dict[k] = v

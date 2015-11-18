@@ -10,6 +10,9 @@ class InputController < ApplicationController
     # Make params hash accessible to model
     Input.assign_hash_from_controller(params)
     
+    # Generate values hash for design params based on target expr level
+    Input.get_expr_vals
+    
     # breakdown params hash into correct arg string in model
     @arg_string = Input.make_argstring()
     

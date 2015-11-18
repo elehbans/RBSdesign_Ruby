@@ -1,5 +1,6 @@
 class Input < ActiveRecord::Base
   require 'open3'
+  require 'csv'
 
   def dG_Hyb_val
   end
@@ -22,7 +23,7 @@ class Input < ActiveRecord::Base
   def ProjName
   end
   
-  def FreqTable
+  def Organism
   end
   
   def CodOptAllow
@@ -52,8 +53,16 @@ class Input < ActiveRecord::Base
   def Design_Mode
   end
   
+  def Expr_lvl
+  end
   
-  
+  def self.get_expr_vals
+    @expr_val_hash = {}
+
+    CSV.foreach("org_specific_energies.csv", :headers => true) do |row|
+      @expr_val_hash[row.fields[0]] = Hash[row.headers[1..-1].zip(row.fields[1..-1])]
+    end
+  end
   
   def self.assign_hash_from_controller(parameters)
     @params = parameters
@@ -70,11 +79,38 @@ class Input < ActiveRecord::Base
       rbs_mode = start + ":" + length
     end
     
-    freq_table = @params[:input][:FreqTable]
-    if freq_table == "Chlamydomonas"
-      freq_table = "Chlamy_codons.csv"
-    else
+    @organism = @params[:input][:Organism]
+    if @organism == "E.coli"
+      freq_table = "Ecoli_codons.csv"
+      @organism = "Ecoli_K12"
+    elsif @organism == "Aponinum"
       freq_table = "Apon_codons.csv"
+    elsif @organism == "Synechococcus 7942"
+      freq_table = "Sync_codons.csv"
+      @organism = "Synechococcus_7942"
+    end
+    
+    expr_lvl = @params[:input][:Expr_lvl]
+    if expr_lvl == "Very High"
+      @dG_Hyb_var = "Hyb_VH"
+      @dG_mRNA_var = "mRNA_VH"
+      @tir_var = "TIR_VH"
+    elsif expr_lvl == "High"
+      @dG_Hyb_var = "Hyb_H"
+      @dG_mRNA_var = "mRNA_H"
+      @tir_var = "TIR_H"
+    elsif expr_lvl == "Mean"
+      @dG_Hyb_var = "Hyb_M"
+      @dG_mRNA_var = "mRNA_M"
+      @tir_var = "TIR_M"
+    elsif expr_lvl == "Low"
+      @dG_Hyb_var = "Hyb_L"
+      @dG_mRNA_var = "mRNA_L"
+      @tir_var = "TIR_L"
+    elsif expr_lvl == "Very Low"
+      @dG_Hyb_var = "Hyb_VL"
+      @dG_mRNA_var = "mRNA_VL"
+      @tir_var = "TIR_VL"
     end
     
     max_iter = @params[:input][:MaxIter]
@@ -108,12 +144,14 @@ class Input < ActiveRecord::Base
       end
     
     else
-      @target_TIR = "3000"
+      @target_TIR = @expr_val_hash[@organism][@tir_var]
       @tir_acc = "10"
       @hyb_acc = "20"
       @mRNA_acc = "20"
-      @dG_Hyb_val = "-1.98"
-      @dG_mRNA_val = "-5.6"
+      @dG_Hyb_val = @expr_val_hash[@organism][@dG_Hyb_var]
+      @dG_mRNA_val = @expr_val_hash[@organism][@dG_mRNA_var]
+      @dG_Hyb = "P"
+      @dG_mRNA = "P"
     end
     
     out_file = proj_name + "_" + Input.randstring
